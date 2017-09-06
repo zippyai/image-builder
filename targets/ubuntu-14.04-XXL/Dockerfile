@@ -137,15 +137,12 @@ ADD circleci-provision-scripts/haskell.sh /opt/circleci-provision-scripts/haskel
 RUN circleci-install ghc 8.0.2
 RUN circleci-install stack
 
-ADD circleci-provision-scripts/git-lfs.sh /opt/circleci-provision-scripts/git-lfs.sh
-RUN circleci-install git-lfs 1.5.4
-
 # Docker have be last - to utilize cache better
 ADD circleci-provision-scripts/docker.sh /opt/circleci-provision-scripts/docker.sh
 RUN circleci-install docker && circleci-install docker_compose
 
 # Install CircleCI patched Docker that runs in unpriv container
-RUN circleci-install circleci_docker
+RUN circleci-install docker
 
 # Undivert upstart
 # You shouldn't change the line unless you understad the consequence

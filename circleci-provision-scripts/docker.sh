@@ -3,21 +3,12 @@
 function install_docker() {
     echo '>>>> Installing Docker'
 
-    # Pin Docker version to 10.x since 11 brings breaking changes
-    echo "deb [arch=amd64] https://apt.dockerproject.org/repo ubuntu-trusty main" > /etc/apt/sources.list.d/docker.list
-    apt-get update
-    apt-get install docker-engine=1.10.3-0~trusty
-
+    curl -fsSL get.docker.com -o get-docker.sh
+    sh get-docker.sh
     # Devicemapper files are huge if got created - we don't use device mapper anyway
     rm -rf /var/lib/docker/devicemapper/devicemapper/data
     rm -rf /var/lib/docker/devicemapper/devicemapper/metadata
 
-    # CirclecI Docker customizations
-    sed -i 's|^limit|#limit|g' /etc/init/docker.conf
-    usermod -a -G docker ${CIRCLECI_USER}
-
-    # Docker will be running inside a container (lxc or privileged docker)
-    # Internally, docker checks container env-var to condition some apparmor profile activities that don't work within lxc
     echo 'env container=yes' >> /etc/init/docker.conf
 
     # Don't start Docker by default
